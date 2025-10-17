@@ -94,12 +94,12 @@ export default function Hero() {
     }
     const script = document.createElement("script");
     script.id = "krpano-script";
-    script.src = "/vtour/tour.js";
+    script.src = "vtour/tour.js";
     script.async = true;
     script.onload = () => {
       if (window.embedpano) {
         window.embedpano({
-          xml: "/vtour/tour.xml",
+          xml: "vtour/tour.xml",
           target: "panoContainer",
           html5: "only",
           mobilescale: 1.0,
