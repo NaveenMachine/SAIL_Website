@@ -76,7 +76,7 @@ const cardData = {
   }
 };
 
-export default function Hero() {
+export default function Hero_Experimental() {
   const [cardPositions, setCardPositions] = useState({});
 
   useEffect(() => {
