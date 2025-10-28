@@ -2,33 +2,33 @@ import {
     AppBar,
     Toolbar,
     Typography,
-    useTheme,
-    useMediaQuery,
     Tabs,
     Tab,
     Box,
     Button,
     IconButton,
-  } from '@mui/material';
-  import InstagramIcon from '@mui/icons-material/Instagram';
-  import GitHubIcon from '@mui/icons-material/GitHub';
-  import LinkedInIcon from '@mui/icons-material/LinkedIn';
-  import { useState, useEffect } from 'react';
-  import DrawerComp from './Drawer';
-  import PropTypes from 'prop-types';
-  import { Link } from 'react-scroll';
+    useTheme,
+    useMediaQuery,
+  } from "@mui/material";
+  import LinkedInIcon from "@mui/icons-material/LinkedIn";
+  import GitHubIcon from "@mui/icons-material/GitHub";
+  import InstagramIcon from "@mui/icons-material/Instagram";
+  import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-scroll";
+  import { useState, useEffect } from "react";
+  import DrawerComp from "./Drawer";
+  import PropTypes from "prop-types";
   
   export default function NavBar({ links }) {
     const theme = useTheme();
-    const isMatch = useMediaQuery(theme.breakpoints.down('md'));
-    const [value, setValue] = useState();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const [value, setValue] = useState(0);
     const [scrolled, setScrolled] = useState(false);
   
-    // ✅ Detect scroll position
     useEffect(() => {
       const handleScroll = () => setScrolled(window.scrollY > 80);
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
     }, []);
   
     return (
@@ -36,138 +36,147 @@ import {
         position="fixed"
         elevation={scrolled ? 6 : 0}
         sx={{
-          transition: 'all 0.35s ease',
-          backgroundImage: scrolled
-            ? 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)'
-            : 'none',
-          backgroundColor: scrolled ? 'rgba(2, 0, 36, 0.85)' : 'transparent',
-          backdropFilter: scrolled ? 'blur(6px)' : 'none',
-          paddingY: scrolled ? '4px' : '14px', // ✅ shrinks height
+          transition: "all 0.35s ease",
+          backgroundColor: scrolled ? "rgba(2,0,36,0.88)" : "transparent",
+          backdropFilter: scrolled ? "blur(8px)" : "none",
+          paddingY: scrolled ? "4px" : "14px",
+          width: "100%",
+          maxWidth: "100vw",
+          overflow: "hidden",
+          zIndex: 1000,
         }}
       >
         <Toolbar
           sx={{
-            transition: 'all 0.35s ease',
+            width: "100%",
+            maxWidth: "100vw",
+            display: "flex",
+            alignItems: "center",
+            overflow: "hidden",
+            px: { xs: 1, sm: 2, md: 3 },
           }}
         >
-          {isMatch ? (
-            <>
-              {/* Mobile Header Logo */}
+          {isMobile ? (
+            <Box sx={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "space-between",
+              width: "100%",
+              minWidth: 0,
+            }}>
               <Typography
-                component={Link}
-                to="home"
-                smooth={true}
-                duration={500}
+                component={RouterLink}
+                to="/"
                 sx={{
-                  flexGrow: 1,
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  fontSize: scrolled ? '1.1rem' : '1.4rem',
-                  transition: 'font-size 0.35s ease',
-                  color: 'white',
+                  cursor: "pointer",
+                  color: "white",
+                  fontWeight: 700,
+                  fontSize: "1.4rem",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  textDecoration: "none",
                 }}
               >
                 OSU SAIL
               </Typography>
-  
               <DrawerComp links={links} />
-            </>
+            </Box>
           ) : (
-            <>
-              {/* Desktop Logo */}
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: { xs: 1, sm: 2, md: 3 },
+                minWidth: 0, // Allow shrinking
+                overflow: "hidden",
+              }}
+            >
+              {/* LEFT */}
               <Typography
-                component={Link}
-                to="home"
-                smooth={true}
-                duration={500}
+                component={RouterLink}
+                to="/"
                 sx={{
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  fontSize: scrolled ? '1.2rem' : '1.6rem', // ✅ Shrinks logo text
-                  transition: 'font-size 0.35s ease',
-                  color: 'white',
+                  cursor: "pointer",
+                  color: "white",
+                  fontWeight: 700,
+                  fontSize: scrolled ? "1.15rem" : "1.5rem",
+                  whiteSpace: "nowrap",
+                  textDecoration: "none",
                 }}
               >
                 OSU SAIL
               </Typography>
   
-              <Box
-                sx={{
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
+              {/* CENTER */}
+              <Box sx={{ 
+                flexGrow: 1, 
+                display: "flex", 
+                justifyContent: "center",
+                minWidth: 0, // Allow shrinking
+                overflow: "hidden",
+              }}>
                 <Tabs
-                  sx={{ marginLeft: 5 }}
-                  indicatorColor="secondary"
-                  textColor="inherit"
                   value={value}
                   onChange={(e, val) => setValue(val)}
+                  textColor="inherit"
+                  TabIndicatorProps={{ style: { background: "#C8102E" } }}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  allowScrollButtonsMobile
+                  sx={{
+                    maxWidth: "100%",
+                    "& .MuiTabs-scrollButtons": {
+                      color: "white",
+                    },
+                    "& .MuiTabs-scrollButtons.Mui-disabled": {
+                      opacity: 0.3,
+                    },
+                  }}
                 >
-                  {links.map((link, index) => (
+                  {links.map((link, i) => (
                     <Tab
-                      key={index}
+                      key={i}
                       label={link}
-                      component={Link}
-                      to={link.toLowerCase()}
-                      smooth={true}
-                      offset={-70}
-                      duration={500}
+                      component={RouterLink}
+                      to={`/${link.toLowerCase()}`}
                       sx={{
-                        fontSize: scrolled ? '0.85rem' : '1rem', // ✅ Shrinks nav text
-                        transition: 'font-size 0.35s ease',
+                        fontSize: scrolled ? "0.85rem" : "1rem",
+                        fontWeight: 500,
+                        minWidth: "auto",
+                        px: { xs: 1, sm: 1.5, md: 2 },
+                        whiteSpace: "nowrap",
+                        textDecoration: "none",
+                        color: "inherit",
                       }}
                     />
                   ))}
                 </Tabs>
-  
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <IconButton
-                    sx={{ background: 'rgba(2,0,36,1)' }}
-                    component="a"
-                    href="https://www.linkedin.com/in/naveen-kamath-434668287/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <LinkedInIcon sx={{ color: 'white' }} />
-                  </IconButton>
-  
-                  <IconButton
-                    sx={{ background: 'rgba(2,0,36,1)' }}
-                    component="a"
-                    href="https://www.github.com/NaveenMachine"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <GitHubIcon sx={{ color: 'white' }} />
-                  </IconButton>
-  
-                  <IconButton
-                    sx={{ background: 'rgba(2,0,36,1)' }}
-                    component="a"
-                    href="https://www.instagram.com/naveenkamath_/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <InstagramIcon sx={{ color: 'white' }} />
-                  </IconButton>
-  
-                  <Button
-                    sx={{ marginLeft: 5, background: 'rgba(2,0,36,1)' }}
-                    variant="contained"
-                    component={Link}
-                    to="contact"
-                    smooth={true}
-                    offset={-70}
-                    duration={500}
-                  >
-                    Contact
-                  </Button>
-                </Box>
               </Box>
-            </>
+  
+              {/* RIGHT */}
+              <Box sx={{ 
+                display: "flex", 
+                alignItems: "center", 
+                flexShrink: 0, 
+                gap: { xs: "8px", sm: "12px" },
+                minWidth: "fit-content",
+              }}>
+                <IconButton href="https://www.linkedin.com" target="_blank" sx={{ color: "white" }}>
+                  <LinkedInIcon />
+                </IconButton>
+                <IconButton href="https://github.com" target="_blank" sx={{ color: "white" }}>
+                  <GitHubIcon />
+                </IconButton>
+                <IconButton href="https://instagram.com" target="_blank" sx={{ color: "white" }}>
+                  <InstagramIcon />
+                </IconButton>
+  
+                {/* --- CONTACT BUTTON REMOVED --- */}
+                
+              </Box>
+            </Box>
           )}
         </Toolbar>
       </AppBar>
@@ -177,4 +186,3 @@ import {
   NavBar.propTypes = {
     links: PropTypes.arrayOf(PropTypes.string).isRequired,
   };
-  

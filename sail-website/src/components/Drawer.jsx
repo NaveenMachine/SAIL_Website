@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-// 1. Import Link from react-scroll
-import { Link } from 'react-scroll';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function DrawerComp({ links }) {
   const [open, setOpen] = useState(false);
@@ -41,12 +40,10 @@ export default function DrawerComp({ links }) {
             {links.map((link, index) => (
               <ListItemButton
                 key={index}
-                component={Link}
-                to={link.toLowerCase()}
-                smooth={true}
-                offset={-70}
-                duration={500}
+                component={RouterLink}
+                to={`/${link.toLowerCase()}`}
                 onClick={() => setOpen(false)} // This correctly closes the drawer on click
+                sx={{ textDecoration: 'none' }}
               >
                 <ListItemText sx={{ color: 'white', textAlign: 'center' }} primary={link} />
               </ListItemButton>
@@ -88,11 +85,8 @@ export default function DrawerComp({ links }) {
               }}
             >
               <Button
-                component={Link}
-                to="contact"
-                smooth={true}
-                offset={-70}
-                duration={500}
+                component={RouterLink}
+                to="/about"
                 onClick={() => setOpen(false)} // Also close drawer on click
                 sx={{
                   background: 'white',
@@ -101,6 +95,7 @@ export default function DrawerComp({ links }) {
                     color: 'white',
                   },
                   color: 'black',
+                  textDecoration: 'none',
                 }}
                 variant="contained"
               >

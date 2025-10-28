@@ -1,0 +1,100 @@
+.hero {
+    width: 100%;
+    max-width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  
+    /* Move hero *under* navbar */
+    margin-top: -64px; /* adjust if your navbar height differs */
+    position: relative;
+    z-index: 0;
+  }
+
+  /* Parallax background layer */
+  .hero-background {
+    transform-origin: center center;
+    filter: brightness(0.8) contrast(1.1);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  /* Dark overlay background */
+  .hero-overlay-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 1;
+    backdrop-filter: blur(0.5px);
+  }
+  
+  /* Overlay text container */
+  .hero-overlay {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateZ(0); /* Force hardware acceleration */
+  }
+  
+  /* Subtitle */
+  .hero-subtitle {
+    font-size: clamp(1rem, 2.5vw, 2rem);
+    color: white;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25em;
+    text-shadow: 0 3px 12px rgba(0,0,0,0.6);
+  }
+  
+  /* Title */
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow: 0 4px 18px rgba(0,0,0,0.7);
+    margin-top: 0;
+    transform: translateZ(0); /* Hardware acceleration */
+  }
+
+  /* Enhanced parallax effects */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-background {
+      transition: transform 0.1s ease-out;
+    }
+  }
+
+  /* Performance optimizations */
+  .hero-background {
+    will-change: transform;
+    transform-style: preserve-3d;
+  }
+
+  /* Fractured effect enhancement */
+  .hero-background::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(255,255,255,0.1) 25%,
+      transparent 50%,
+      rgba(0,0,0,0.1) 75%,
+      transparent 100%
+    );
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  
