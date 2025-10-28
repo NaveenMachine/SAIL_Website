@@ -13,7 +13,7 @@ import {
   import InstagramIcon from '@mui/icons-material/Instagram';
   import GitHubIcon from '@mui/icons-material/GitHub';
   import LinkedInIcon from '@mui/icons-material/LinkedIn';
-  import { useState } from 'react';
+  import { useState, useEffect } from 'react';
   import DrawerComp from './Drawer';
   import PropTypes from 'prop-types';
   import { Link } from 'react-scroll';
@@ -22,49 +22,74 @@ import {
     const theme = useTheme();
     const isMatch = useMediaQuery(theme.breakpoints.down('md'));
     const [value, setValue] = useState();
+    const [scrolled, setScrolled] = useState(false);
+  
+    // ✅ Detect scroll position
+    useEffect(() => {
+      const handleScroll = () => setScrolled(window.scrollY > 80);
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
   
     return (
       <AppBar
+        position="fixed"
+        elevation={scrolled ? 6 : 0}
         sx={{
-          backgroundImage:
-            'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)',
+          transition: 'all 0.35s ease',
+          backgroundImage: scrolled
+            ? 'linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)'
+            : 'none',
+          backgroundColor: scrolled ? 'rgba(2, 0, 36, 0.85)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(6px)' : 'none',
+          paddingY: scrolled ? '4px' : '14px', // ✅ shrinks height
         }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            transition: 'all 0.35s ease',
+          }}
+        >
           {isMatch ? (
             <>
-              <Button
+              {/* Mobile Header Logo */}
+              <Typography
+                component={Link}
+                to="home"
+                smooth={true}
+                duration={500}
                 sx={{
-                  background: 'rgba(2,0,36,1)',
-                  '&:hover': { background: 'rgba(2,0,36,0.8)' },
+                  flexGrow: 1,
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: scrolled ? '1.1rem' : '1.4rem',
+                  transition: 'font-size 0.35s ease',
                   color: 'white',
                 }}
-                component={Link}   // <--- Make the Button render as a react-scroll Link
-                to="home"          // <--- Target the "home" (or "top") section ID
-                smooth={true}      // <--- Enable smooth scrolling
-                offset={-70}       // <--- Adjust if you have a fixed header, otherwise can be 0
-                duration={500}     // <--- Scroll speed in milliseconds
               >
-                <Typography component="div">OSU SAIL</Typography>
-              </Button>
+                OSU SAIL
+              </Typography>
+  
               <DrawerComp links={links} />
             </>
           ) : (
             <>
-              <Button
+              {/* Desktop Logo */}
+              <Typography
+                component={Link}
+                to="home"
+                smooth={true}
+                duration={500}
                 sx={{
-                  background: 'rgba(2,0,36,1)',
-                  '&:hover': { background: 'rgba(2,0,36,0.8)' },
+                  cursor: 'pointer',
+                  fontWeight: '600',
+                  fontSize: scrolled ? '1.2rem' : '1.6rem', // ✅ Shrinks logo text
+                  transition: 'font-size 0.35s ease',
                   color: 'white',
                 }}
-                component={Link}   
-                to="home"         
-                smooth={true}      
-                offset={-70}       
-                duration={500}     
               >
-                <Typography component="div">OSU SAIL</Typography>
-              </Button>
+                OSU SAIL
+              </Typography>
   
               <Box
                 sx={{
@@ -79,69 +104,68 @@ import {
                   indicatorColor="secondary"
                   textColor="inherit"
                   value={value}
-                  // The onChange is less critical now, but we'll keep it
                   onChange={(e, val) => setValue(val)}
                 >
                   {links.map((link, index) => (
                     <Tab
                       key={index}
                       label={link}
-                      // This is the magic part:
-                      component={Link} // 1. Render the Tab as a react-scroll Link
-                      to={link.toLowerCase()} // 2. Set the target section ID
-                      smooth={true}      // 3. Enable smooth scrolling
-                      offset={-70}       // 4. Offset for your fixed navbar
-                      duration={500}     // 5. Set the scroll speed
+                      component={Link}
+                      to={link.toLowerCase()}
+                      smooth={true}
+                      offset={-70}
+                      duration={500}
+                      sx={{
+                        fontSize: scrolled ? '0.85rem' : '1rem', // ✅ Shrinks nav text
+                        transition: 'font-size 0.35s ease',
+                      }}
                     />
                   ))}
                 </Tabs>
   
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  {/* LinkedIn Button */}
                   <IconButton
-                      sx={{ background: 'rgba(2,0,36,1)' }}
-                      component="a" // <--- PLACE THESE PROPS HERE on the IconButton
-                      href="https://www.linkedin.com/in/naveen-kamath-434668287/"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    sx={{ background: 'rgba(2,0,36,1)' }}
+                    component="a"
+                    href="https://www.linkedin.com/in/naveen-kamath-434668287/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                      <LinkedInIcon sx={{ color: 'white', '&:hover': { color: 'black' } }} />
+                    <LinkedInIcon sx={{ color: 'white' }} />
                   </IconButton>
   
-                  {/* GitHub Button */}
                   <IconButton
-                      sx={{ background: 'rgba(2,0,36,1)' }}
-                      component="a" // <--- PLACE THESE PROPS HERE on the IconButton
-                      href="https://www.github.com/NaveenMachine"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    sx={{ background: 'rgba(2,0,36,1)' }}
+                    component="a"
+                    href="https://www.github.com/NaveenMachine"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                      <GitHubIcon sx={{ color: 'white', '&:hover': { color: 'black' } }} />
+                    <GitHubIcon sx={{ color: 'white' }} />
                   </IconButton>
   
-                  {/* Instagram Button */}
                   <IconButton
-                      sx={{ background: 'rgba(2,0,36,1)' }}
-                      component="a" // <--- PLACE THESE PROPS HERE on the IconButton
-                      href="https://www.instagram.com/naveenkamath_/"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    sx={{ background: 'rgba(2,0,36,1)' }}
+                    component="a"
+                    href="https://www.instagram.com/naveenkamath_/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                      <InstagramIcon sx={{ color: 'white', '&:hover': { color: 'black' } }} />
+                    <InstagramIcon sx={{ color: 'white' }} />
                   </IconButton>
   
                   <Button
-                      sx={{ marginLeft: 5, background: 'rgba(2,0,36,1)' }}
-                      variant="contained"
-                      component={Link} // <--- ADD THIS
-                      to="contact"     // <--- ADD THIS (assuming your contact section's ID is "contact")
-                      smooth={true}    // <--- ADD THIS
-                      offset={-70}     // <--- ADD THIS (adjust if your navbar height changes)
-                      duration={500}   // <--- ADD THIS
+                    sx={{ marginLeft: 5, background: 'rgba(2,0,36,1)' }}
+                    variant="contained"
+                    component={Link}
+                    to="contact"
+                    smooth={true}
+                    offset={-70}
+                    duration={500}
                   >
-                      Contact
+                    Contact
                   </Button>
-              </Box>
+                </Box>
               </Box>
             </>
           )}
